@@ -183,7 +183,7 @@ function handleInit() {
     metaEventTemplate = document.getElementById("meta-event-template");
     metaEventTemplate.remove();
 
-    characterName = document.getElementById("character-name");
+    characterName = document.querySelectorAll(".character-name");
 
     document.getElementById("import").addEventListener("click", () => {
         let handler = (action) => { 
@@ -381,12 +381,13 @@ function initOracle() {
 
 function initStats() {
     for (let p in statElements) {
-        let container = document.getElementById("stat-" + p);
-        if (container === null) {
+        let selector = "#header-stat-" + p + " .stat-value, " + "#stat-" + p + " .stat-value";
+        let containers = document.querySelectorAll(selector);
+        if (containers.length === 0) {
             delete statElements[p];
             continue;
         }
-        statElements[p] = container.querySelector(".stat-value");
+        statElements[p] = containers;
     }
 }
 
@@ -793,7 +794,9 @@ function clearEventHistory() {
 function refresh() {
     // stats
     for (let p in statElements) {
-        statElements[p].textContent = session.state.stats[p];
+        for (let el of statElements[p]) {
+            el.innerText = session.state.stats[p];
+        }
     }
 
     // experience
@@ -887,7 +890,9 @@ function refresh() {
     }
 
     // name
-    characterName.textContent = session.state.characterName;
+    for(let el of characterName) {
+        el.innerText = session.state.characterName;
+    }
 
     // assets
     let assetList = assetCard.querySelector(".assets");

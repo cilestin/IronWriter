@@ -96,6 +96,27 @@ body {
     min-width: 40px;
     padding: 0px;
 }
+.header .divider {
+    border-left: 1px solid lightgray;
+    height: 2em;
+    margin: 0 0.75em;
+}
+.header .stat-box {
+    height: initial;
+    margin: 0;
+    min-width: 48px;
+    width: initial;
+}
+.header .stat-box .frame {
+    border: none;
+}
+.header .stat-box .stat-value {
+    font-size: 1.2em;
+}
+.header button {
+    background-color: var(--mdc-theme-primary, #6200ee);
+    color: white;
+}
 .header .mdc-button__ripple {
     width: 40px;
     top: auto !important;
