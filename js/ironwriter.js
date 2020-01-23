@@ -84,6 +84,9 @@ const BookmarkFilterTypeMapping = {
     3: ['progress_add', 'progress_progress', 'progress_complete']
 };
 
+const Snippet = _.template("[<%= tag %> <% let str = args.join(' '); %><%= str %>]");
+const Quote = _.template('"<%= value %>"', {variable: 'value'});
+
 let statElements = {};
 for (let p in STATS) {
     statElements[p] = undefined;
@@ -492,6 +495,11 @@ function handleEventHistoryBlur(event) {
     el.removeEventListener('blur', handleEventHistoryBlur);
 }
 
+function handleSnippetElementClick(event) {
+    let el = event.target.closest('[data-snippet]');
+    entryInput.value += el.dataset.snippet;
+}
+
 /**
  * @params {Resource} resource
  */
@@ -792,14 +800,18 @@ function clearEventHistory() {
 }
 
 function refresh() {
+    let usableXP = session.state.stats.experience - session.state.stats.experienceSpent
     // stats
     for (let p in statElements) {
         for (let el of statElements[p]) {
-            el.innerText = session.state.stats[p];
+            let statValue = (p !== 'experience') ? session.state.stats[p] : usableXP;
+            el.innerText = statValue;
+            el.closest('.stat-box').dataset.snippet = Snippet({tag: p, args: [statValue]});
         }
     }
 
     // experience
+    experience.dataset.snippet = Snippet({tag: 'experience', args: [usableXP]});
     let dots = experience.querySelectorAll(".dot");
     for (let i = 0; i < dots.length; i++) {
         let empty = dots[i].querySelector(".empty");
@@ -892,6 +904,7 @@ function refresh() {
     // name
     for(let el of characterName) {
         el.innerText = session.state.characterName;
+        el.dataset.snippet = Snippet({tag: 'rename', args: [Quote(session.state.characterName)]});
     }
 
     // assets
@@ -941,6 +954,12 @@ function refresh() {
 
     // bookmarks
     refreshBookmarksList(bookmarksFilterIndex);
+
+    // snippets
+    document.querySelectorAll('[data-snippet]').forEach( (el) => {
+        el.addEventListener('click', handleSnippetElementClick);
+    });
+
 }
 
 function refreshBookmarksList(filterIdx = 0) {

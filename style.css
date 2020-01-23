@@ -502,3 +502,7 @@ body {
 #bookmarks-list .mdc-list-item__meta i {
     padding-left: 1rem;
 }
+
+[data-snippet] {
+    cursor: pointer;
+}
